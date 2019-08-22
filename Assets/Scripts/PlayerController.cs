@@ -25,21 +25,75 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private float jumpForce;
-
-    [SerializeField]
-    private GameObject floorCollider;
-
     [SerializeField]
     private GameObject directionalSphere;
 
     private KeyCode keyPressed;
+
+    [SerializeField]
+    private GameObject mainCamera;
+    public enum RotationAxes { MouseXAndY = 0, MouseX = 1, MouseY = 2 }
+    private RotationAxes axes = RotationAxes.MouseXAndY;
+    private float sensitivityX = 15F;
+    private float sensitivityY = 15F;
+    private float minimumX = -360F;
+    private float maximumX = 360F;
+    private float minimumY = -60F;
+    private float maximumY = 60F;
+    private float rotationX = 0F;
+    private float rotationY = 0F;
+    private Quaternion originalRotation1, originalRotation2;
+    
     #endregion
 
     private void Start()
     {
         RB = this.GetComponent<Rigidbody>();
+        if (GetComponent<Rigidbody>())
+            RB.freezeRotation = true;
+        originalRotation1 = transform.localRotation;
+        originalRotation2 = mainCamera.transform.localRotation;
     }
 
+    private void Update()
+    {
+        rotationX += Input.GetAxis("Mouse X") * sensitivityX;
+        rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+        rotationX = Mathf.Clamp(rotationX, minimumX, maximumX);
+        rotationY = Mathf.Clamp(rotationY, minimumY, maximumY);
+        Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.up);
+        Quaternion yQuaternion = Quaternion.AngleAxis(rotationY, -Vector3.right);
+        transform.localRotation = originalRotation1 * xQuaternion;
+        mainCamera.transform.localRotation = originalRotation2 * yQuaternion;
+
+        /* original script, allows you to choose which axis you want to rotate in the inspector
+        if (axes == RotationAxes.MouseXAndY)
+        {
+            // Read the mouse input axis
+            rotationX += Input.GetAxis("Mouse X") * sensitivityX;
+            rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+            rotationX = Mathf.Clamp(rotationX, minimumX, maximumX);
+            rotationY = Mathf.Clamp(rotationY, minimumY, maximumY);
+            Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.up);
+            Quaternion yQuaternion = Quaternion.AngleAxis(rotationY, -Vector3.right);
+            transform.localRotation = originalRotation * xQuaternion * yQuaternion;
+        }
+        else if (axes == RotationAxes.MouseX)
+        {
+            rotationX += Input.GetAxis("Mouse X") * sensitivityX;
+            rotationX = Mathf.Clamp(rotationX, minimumX, maximumX);
+            Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.up);
+            transform.localRotation = originalRotation * xQuaternion;
+        }
+        else
+        {
+            rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+            rotationY = Mathf.Clamp(rotationY, minimumY, maximumY);
+            Quaternion yQuaternion = Quaternion.AngleAxis(-rotationY, Vector3.right);
+            transform.localRotation = originalRotation * yQuaternion;
+        }
+        */
+    }
     private void FixedUpdate()
     {
         InputManager();
