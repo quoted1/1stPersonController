@@ -878,7 +878,7 @@ MonoBehaviour:
   crouchSpeed: 1
   walkSpeed: 2
   sprintSpeed: 4
-  jumpForce: 5
+  jumpForce: 10
   directionalSphere: {fileID: 589132657}
   mainCamera: {fileID: 963194225}
 --- !u!135 &1426550786

@@ -112,6 +112,8 @@ public class PlayerController : MonoBehaviour
         this.transform.position = Vector3.MoveTowards(this.transform.position, directionalSphere.transform.position, moveSpeed * 0.1f/*XYDamping*/);
 
         //if you can figure out how to do this better, please do, i dont think a switch function would work
+        CapsuleCollider CCH = GetComponent<CapsuleCollider>();
+
         if (Input.GetKey(KeyCode.LeftShift))
         {
             moveSpeed = sprintSpeed;
@@ -119,10 +121,12 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetKey(KeyCode.LeftControl))
         {
             moveSpeed = crouchSpeed;
+            CCH.height = Mathf.MoveTowards(CCH.height, 1, 0.15f);
         }
         else
         {
             moveSpeed = walkSpeed;
+            CCH.height = Mathf.MoveTowards(CCH.height, 2, 0.15f);
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded == true)
