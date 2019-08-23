@@ -27,6 +27,8 @@ public class PlayerController : MonoBehaviour
     private float jumpForce;
     [SerializeField]
     private GameObject directionalSphere;
+    [SerializeField]
+    private float floatSpeed;
 
     private KeyCode keyPressed;
 
@@ -103,13 +105,18 @@ public class PlayerController : MonoBehaviour
     {
         bool walking;
         //Directional movement
+        float acceleration = Vector3.Distance(this.transform.position, directionalSphere.transform.position);
         moveX = Input.GetAxis("Horizontal");
         moveY = Input.GetAxis("Vertical");
         if (isGrounded == true)
         {
             directionalSphere.transform.localPosition = new Vector3(moveX, 0, moveY);
         }
-        this.transform.position = Vector3.MoveTowards(this.transform.position, directionalSphere.transform.position, moveSpeed * 0.1f/*XYDamping*/);
+        else
+        {
+            directionalSphere.transform.localPosition = Vector3.MoveTowards(directionalSphere.transform.localPosition, Vector3.zero, floatSpeed*acceleration);
+        }
+        this.transform.position = Vector3.MoveTowards(this.transform.position, directionalSphere.transform.position, moveSpeed * 0.1f * acceleration);
 
         //if you can figure out how to do this better, please do, i dont think a switch function would work
         CapsuleCollider CCH = GetComponent<CapsuleCollider>();
